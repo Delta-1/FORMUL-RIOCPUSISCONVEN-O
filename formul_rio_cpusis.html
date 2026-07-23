@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Formulário CPUSIS - Convenção</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cpusis: {
+                            dark: '#070A11',
+                            card: '#0F172A',
+                            accent: '#06B6D4',
+                            accentGlow: 'rgba(6, 182, 212, 0.25)',
+                            purple: '#6366F1'
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'shimmer': 'shimmer 2s linear infinite',
+                        'spin-slow': 'spin 12s linear infinite'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-8px)' }
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter & Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: #070A11;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(6, 182, 212, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(99, 102, 241, 0.12) 0px, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        .glass-card {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+        }
+
+        .glass-input {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-input:focus {
+            border-color: #06B6D4;
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.25);
+            background: rgba(15, 23, 42, 0.95);
+        }
+
+        .radio-card {
+            transition: all 0.25s ease;
+        }
+
+        .radio-card:has(input:checked) {
+            border-color: #06B6D4;
+            background: rgba(6, 182, 212, 0.12);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
+            transform: translateY(-2px);
+        }
+
+        /* Ambient Glow Blobs */
+        .glow-blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.4;
+        }
+
+        /* Camera Flash Overlay */
+        .flash-effect {
+            animation: flashAnimation 0.4s ease-out forwards;
+        }
+
+        @keyframes flashAnimation {
+            0% { opacity: 0.9; background-color: white; }
+            100% { opacity: 0; background-color: transparent; }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06B6D4;
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-white relative overflow-x-hidden">
+
+    <div class="glow-blob w-72 h-72 sm:w-96 sm:h-96 bg-cyan-500/20 -top-20 -left-20 animate-pulse-slow"></div>
+    <div class="glow-blob w-72 h-72 sm:w-96 sm:h-96 bg-indigo-500/20 top-1/2 -right-20 animate-pulse-slow" style="animation-delay: 2s;"></div>
+
+    <header class="w-full border-b border-white/10 bg-slate-950/70 backdrop-blur-xl sticky top-0 z-30 px-4 py-3 sm:py-4 transition-all">
+        <div class="max-w-3xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div>
+                    <h1 class="text-base sm:text-lg font-bold bg-gradient-to-r from-white via-slate-100 to-cyan-400 bg-clip-text text-transparent">
+                        Formulário CPUSIS
+                    </h1>
+                    <p class="text-[10px] sm:text-xs text-cyan-400 font-medium flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+                        Convenção 2026
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Botão Painel Restrito -->
+            <button onclick="openAuthModal()" type="button" class="text-slate-400 hover:text-cyan-400 transition-all p-2.5 rounded-xl text-xs flex items-center gap-2 border border-white/10 bg-slate-900/50 hover:border-cyan-500/40 hover:bg-cyan-500/10 active:scale-95">
+                <i class="fa-solid fa-lock text-xs"></i>
+                <span class="hidden sm:inline font-semibold">Painel</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-xl mx-auto w-full px-4 py-6 sm:py-8 flex-grow z-10 relative">
+        
+        <!-- Banner Intro Principal -->
+        <div class="glass-card rounded-3xl p-6 sm:p-8 mb-6 text-center relative overflow-hidden group">
+            <div class="absolute -top-12 -right-12 w-36 h-36 bg-gradient-to-br from-cyan-500/20 to-indigo-500/0 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-700"></div>
+            
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-semibold mb-3">
+                <i class="fa-solid fa-sparkles text-[10px]"></i>
+                <span>Seja muito bem-vindo</span>
+            </div>
+
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mb-2 leading-tight">
+                VAMOS CONSTRUIR ESSA HISTÓRIA?
+            </h2>
+            <p class="text-slate-300 text-xs sm:text-sm max-w-md mx-auto leading-relaxed">
+                Formulário para visitantes da convenção de empresas. Agradecemos seu interesse na <strong class="text-cyan-400 font-semibold">CPUSIS</strong>.
+            </p>
+        </div>
+
+        <form id="visitorForm" onsubmit="handleFormSubmit(event)" class="glass-card rounded-3xl p-5 sm:p-8 space-y-5 shadow-2xl relative">
+            
+            <!-- Nome Completo -->
+            <div class="space-y-1.5">
+                <label for="nome" class="block text-xs sm:text-sm font-semibold text-slate-200">
+                    Nome Completo <span class="text-cyan-400">*</span>
+                </label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-regular fa-user text-sm"></i>
+                    </div>
+                    <input type="text" id="nome" required placeholder="Digite seu nome completo"
+                        class="w-full pl-10 pr-4 py-3.5 glass-input rounded-2xl outline-none text-white text-sm placeholder-slate-500">
+                </div>
+            </div>
+
+            <!-- E-mail para contato -->
+            <div class="space-y-1.5">
+                <label for="email" class="block text-xs sm:text-sm font-semibold text-slate-200">
+                    E-mail para contato <span class="text-cyan-400">*</span>
+                </label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-regular fa-envelope text-sm"></i>
+                    </div>
+                    <input type="email" id="email" required placeholder="seuemail@empresa.com.br"
+                        class="w-full pl-10 pr-4 py-3.5 glass-input rounded-2xl outline-none text-white text-sm placeholder-slate-500">
+                </div>
+            </div>
+
+            <!-- Telefone ou WhatsApp -->
+            <div class="space-y-1.5">
+                <label for="telefone" class="block text-xs sm:text-sm font-semibold text-slate-200">
+                    Número de telefone ou WhatsApp <span class="text-cyan-400">*</span>
+                </label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-brands fa-whatsapp text-sm text-emerald-400"></i>
+                    </div>
+                    <input type="tel" id="telefone" required placeholder="(00) 90000-0000" oninput="maskPhone(this)"
+                        class="w-full pl-10 pr-4 py-3.5 glass-input rounded-2xl outline-none text-white text-sm placeholder-slate-500">
+                </div>
+            </div>
+
+            <!-- Nome da empresa -->
+            <div class="space-y-1.5">
+                <label for="empresa" class="block text-xs sm:text-sm font-semibold text-slate-200">
+                    Nome da sua empresa <span class="text-cyan-400">*</span>
+                </label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-regular fa-building text-sm"></i>
+                    </div>
+                    <input type="text" id="empresa" required placeholder="Sua Empresa S.A."
+                        class="w-full pl-10 pr-4 py-3.5 glass-input rounded-2xl outline-none text-white text-sm placeholder-slate-500">
+                </div>
+            </div>
+
+            <div class="space-y-2 pt-1">
+                <label class="block text-xs sm:text-sm font-semibold text-slate-200">
+                    Tempo de atuação da empresa <span class="text-cyan-400">*</span>
+                </label>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                    <label class="radio-card glass-input p-3 rounded-2xl cursor-pointer flex flex-col items-center justify-center text-center relative overflow-hidden group">
+                        <input type="radio" name="tempo_atuacao" value="1. Menos de 1 ano" required class="sr-only">
+                        <span class="w-7 h-7 rounded-full bg-cyan-500/10 text-cyan-400 font-bold text-xs flex items-center justify-center mb-1 group-hover:scale-110 transition-transform">1</span>
+                        <span class="text-xs font-semibold text-white">Até 1 ano</span>
+                    </label>
+
+                    <label class="radio-card glass-input p-3 rounded-2xl cursor-pointer flex flex-col items-center justify-center text-center relative overflow-hidden group">
+                        <input type="radio" name="tempo_atuacao" value="2. 1 a 3 anos" class="sr-only">
+                        <span class="w-7 h-7 rounded-full bg-cyan-500/10 text-cyan-400 font-bold text-xs flex items-center justify-center mb-1 group-hover:scale-110 transition-transform">2</span>
+                        <span class="text-xs font-semibold text-white">1 a 3 anos</span>
+                    </label>
+
+                    <label class="radio-card glass-input p-3 rounded-2xl cursor-pointer flex flex-col items-center justify-center text-center relative overflow-hidden group">
+                        <input type="radio" name="tempo_atuacao" value="3. 3 a 5 anos" class="sr-only">
+                        <span class="w-7 h-7 rounded-full bg-cyan-500/10 text-cyan-400 font-bold text-xs flex items-center justify-center mb-1 group-hover:scale-110 transition-transform">3</span>
+                        <span class="text-xs font-semibold text-white">3 a 5 anos</span>
+                    </label>
+
+                    <label class="radio-card glass-input p-3 rounded-2xl cursor-pointer flex flex-col items-center justify-center text-center relative overflow-hidden group">
+                        <input type="radio" name="tempo_atuacao" value="4. Mais de 5 anos" class="sr-only">
+                        <span class="w-7 h-7 rounded-full bg-cyan-500/10 text-cyan-400 font-bold text-xs flex items-center justify-center mb-1 group-hover:scale-110 transition-transform">4</span>
+                        <span class="text-xs font-semibold text-white">+5 anos</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- CNPJ (Opcional) -->
+            <div class="space-y-1.5 pt-1">
+                <label for="cnpj" class="block text-xs sm:text-sm font-semibold text-slate-200">
+                    CNPJ <span class="text-slate-400 text-xs font-normal">(Opcional)</span>
+                </label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-id-card text-sm"></i>
+                    </div>
+                    <input type="text" id="cnpj" placeholder="00.000.000/0000-00" oninput="maskCNPJ(this)"
+                        class="w-full pl-10 pr-4 py-3.5 glass-input rounded-2xl outline-none text-white text-sm placeholder-slate-500">
+                </div>
+            </div>
+
+            <!-- Regime Tributário -->
+            <div class="space-y-1.5">
+                <label for="regime" class="block text-xs sm:text-sm font-semibold text-slate-200">
+                    Qual o regime tributário atual da empresa? <span class="text-cyan-400">*</span>
+                </label>
+                <div class="relative">
+                    <select id="regime" required class="w-full px-4 py-3.5 glass-input rounded-2xl outline-none text-white text-sm appearance-none cursor-pointer">
+                        <option value="" disabled selected class="bg-slate-900 text-slate-400">Selecione o regime tributário...</option>
+                        <option value="Simples Nacional" class="bg-slate-900">Simples Nacional</option>
+                        <option value="Lucro Presumido" class="bg-slate-900">Lucro Presumido</option>
+                        <option value="Lucro Real" class="bg-slate-900">Lucro Real</option>
+                        <option value="MEI" class="bg-slate-900">MEI (Microempreendedor Individual)</option>
+                        <option value="Outro / Não Sei" class="bg-slate-900">Outro / Não Sei</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-chevron-down text-xs"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nicho de Atuação -->
+            <div class="space-y-1.5">
+                <label for="nicho" class="block text-xs sm:text-sm font-semibold text-slate-200">
+                    Qual o nicho de atuação da sua empresa? <span class="text-cyan-400">*</span>
+                </label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-briefcase text-sm"></i>
+                    </div>
+                    <input type="text" id="nicho" required placeholder="Ex: Tecnologia, Varejo, Serviços..."
+                        class="w-full pl-10 pr-4 py-3.5 glass-input rounded-2xl outline-none text-white text-sm placeholder-slate-500">
+                </div>
+            </div>
+
+            <!-- O que chamou atenção -->
+            <div class="space-y-1.5">
+                <label for="atencao" class="block text-xs sm:text-sm font-semibold text-slate-200">
+                    O que chamou sua atenção na apresentação da CPUSIS? <span class="text-cyan-400">*</span>
+                </label>
+                <textarea id="atencao" rows="3" required placeholder="Conte-nos o que mais se destacou para você..."
+                    class="w-full p-4 glass-input rounded-2xl outline-none text-white text-sm placeholder-slate-500 resize-none"></textarea>
+            </div>
+
+            <div class="pt-3 border-t border-white/10 space-y-3">
+                <div class="flex items-center justify-between">
+                    <label class="block text-xs sm:text-sm font-semibold text-slate-200">
+                        Tire uma selfie com a gente! <span class="text-cyan-400">*</span>
+                    </label>
+                    <span class="text-[10px] text-cyan-400 font-medium px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20">
+                        Câmera Frontal
+                    </span>
+                </div>
+
+                <div class="flex flex-col items-center justify-center p-5 bg-slate-900/80 border-2 border-dashed border-slate-700/80 rounded-3xl relative overflow-hidden transition-all hover:border-cyan-500/50">
+                    
+                    <!-- Preview da Foto Tirada -->
+                    <div id="photoPreviewContainer" class="hidden w-full flex-col items-center py-2 animate-fade-in">
+                        <div class="relative group">
+                            <img id="photoPreview" class="w-40 h-40 sm:w-44 sm:h-44 object-cover rounded-full border-4 border-cyan-500 shadow-2xl shadow-cyan-500/30">
+                            <div class="absolute bottom-1 right-1 bg-emerald-500 text-slate-950 p-2 rounded-full text-xs shadow-lg border border-slate-900">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                        </div>
+                        <button type="button" onclick="retakePhoto()" class="mt-4 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-400 hover:text-cyan-300 font-semibold text-xs flex items-center gap-2 transition-all border border-slate-700 active:scale-95">
+                            <i class="fa-solid fa-rotate-right"></i> Refazer Selfie
+                        </button>
+                    </div>
+
+                    <!-- Botão de Câmera (Início) -->
+                    <div id="photoDefault" class="text-center py-4">
+                        <button type="button" onclick="openCameraModal()" class="w-20 h-20 bg-gradient-to-tr from-cyan-500 via-cyan-400 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-slate-950 font-extrabold rounded-full flex items-center justify-center text-3xl shadow-xl shadow-cyan-500/30 transition-all transform hover:scale-105 active:scale-95 mx-auto mb-3">
+                            <i class="fa-solid fa-camera"></i>
+                        </button>
+                        <p class="text-sm text-slate-200 font-semibold">Toque aqui para abrir a câmera</p>
+                        <p class="text-xs text-slate-400 mt-1">Registre sua presença com a equipe CPUSIS</p>
+                    </div>
+
+                    <input type="hidden" id="photoBase64" required>
+                </div>
+            </div>
+
+            <button type="submit" id="submitBtn" class="w-full py-4 bg-gradient-to-r from-cyan-500 via-cyan-400 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-slate-950 font-extrabold rounded-2xl shadow-xl shadow-cyan-500/25 transition-all flex items-center justify-center gap-2.5 text-base sm:text-lg active:scale-[0.98] mt-4">
+                <span>Enviar Cadastro</span>
+                <i class="fa-solid fa-paper-plane text-sm"></i>
+            </button>
+        </form>
+    </main>
+
+    <div id="cameraModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 hidden flex-col items-center justify-center p-4 transition-all">
+        <div id="flashOverlay" class="absolute inset-0 pointer-events-none z-10 opacity-0"></div>
+        
+        <div class="relative w-full max-w-sm bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl flex flex-col items-center p-5">
+            <div class="flex items-center justify-between w-full mb-3">
+                <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-circle text-[8px] animate-ping"></i> Câmera Ao Vivo
+                </span>
+                <button type="button" onclick="closeCameraModal()" class="text-slate-400 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Moldura de Guia da Selfie -->
+            <div class="relative w-full aspect-square bg-black rounded-2xl overflow-hidden mb-4 border border-cyan-500/30 shadow-inner group">
+                <video id="webcam" autoplay playsinline class="w-full h-full object-cover transform -scale-x-100"></video>
+                <canvas id="canvas" class="hidden"></canvas>
+                
+                <!-- Guia Facial Visual -->
+                <div class="absolute inset-0 border-2 border-cyan-400/40 rounded-full scale-75 pointer-events-none border-dashed animate-spin-slow"></div>
+                <div class="absolute inset-x-0 bottom-3 text-center pointer-events-none">
+                    <span class="text-[11px] bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full text-slate-300 font-medium border border-white/10">
+                        Centralize seu rosto no círculo
+                    </span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 w-full">
+                <button type="button" onclick="closeCameraModal()" class="flex-1 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-2xl text-xs sm:text-sm transition-all active:scale-95">
+                    Cancelar
+                </button>
+                <button type="button" onclick="takeSnapshot()" class="flex-1 py-3.5 bg-gradient-to-r from-cyan-400 to-indigo-500 text-slate-950 font-extrabold rounded-2xl text-xs sm:text-sm transition-all shadow-lg shadow-cyan-500/30 flex items-center justify-center gap-2 active:scale-95">
+                    <i class="fa-solid fa-camera"></i> Capturar Foto
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="authModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 w-full max-w-sm shadow-2xl relative">
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-cyan-500/10 text-cyan-400 rounded-2xl flex items-center justify-center mx-auto mb-3 text-xl border border-cyan-500/20">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white">Painel Administrativo</h3>
+                <p class="text-xs text-slate-400 mt-1">Acesso protegido por senha</p>
+            </div>
+
+            <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div class="relative">
+                    <input type="password" id="adminPassword" required placeholder="Digite a senha..."
+                        class="w-full px-4 py-3.5 glass-input rounded-2xl outline-none text-white text-sm">
+                </div>
+                <p id="authError" class="text-xs text-red-400 hidden text-center font-medium">
+                    <i class="fa-solid fa-circle-exclamation mr-1"></i> Senha incorreta. Tente novamente.
+                </p>
+                <button type="submit" class="w-full py-3.5 bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-extrabold rounded-2xl text-sm transition-all shadow-lg shadow-cyan-500/20">
+                    Acessar Painel
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="adminPanelModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 hidden flex flex-col p-3 sm:p-6 overflow-hidden">
+        <div class="max-w-6xl mx-auto w-full bg-slate-900 border border-slate-800 rounded-3xl flex flex-col h-full overflow-hidden shadow-2xl">
+            
+            <div class="p-4 sm:p-6 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3 bg-slate-950/60">
+                <div>
+                    <h3 class="text-base sm:text-xl font-bold text-white flex items-center gap-2">
+                        <span>Visitantes Cadastrados</span>
+                        <span id="responseCounter" class="text-xs px-2.5 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-semibold">0</span>
+                    </h3>
+                    <p class="text-xs text-slate-400">Dados salvos localmente neste navegador</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="exportToCSV()" class="px-3.5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-lg shadow-emerald-500/20 active:scale-95">
+                        <i class="fa-solid fa-file-excel"></i> Exportar Excel / CSV
+                    </button>
+                    <button onclick="closeAdminPanel()" class="p-2 text-slate-400 hover:text-white rounded-xl bg-slate-800/80">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tabela de Respostas -->
+            <div class="p-3 sm:p-4 overflow-x-auto flex-grow">
+                <table class="w-full text-left text-xs text-slate-300">
+                    <thead class="bg-slate-950 text-slate-400 uppercase font-semibold text-[10px] tracking-wider">
+                        <tr>
+                            <th class="p-3 rounded-l-xl">Foto</th>
+                            <th class="p-3">Data</th>
+                            <th class="p-3">Nome</th>
+                            <th class="p-3">Contato</th>
+                            <th class="p-3">Empresa</th>
+                            <th class="p-3">Tempo</th>
+                            <th class="p-3">CNPJ</th>
+                            <th class="p-3">Regime</th>
+                            <th class="p-3 rounded-r-xl">Nicho</th>
+                        </tr>
+                    </thead>
+                    <tbody id="responsesTableBody" class="divide-y divide-slate-800/60">
+                        <!-- Preenchido via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="successModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-xl z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card rounded-3xl p-8 max-w-sm w-full text-center space-y-4 border-2 border-cyan-500/30 animate-float">
+            <div class="w-20 h-20 bg-gradient-to-tr from-cyan-400 to-indigo-500 text-slate-950 rounded-full flex items-center justify-center text-3xl mx-auto shadow-2xl shadow-cyan-500/40">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h3 class="text-xl font-extrabold text-white">Cadastro Confirmado!</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+                Agradecemos sua participação. Suas informações e selfie já foram gravadas com sucesso!
+            </p>
+            <button onclick="closeSuccessModal()" type="button" class="w-full py-3.5 bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-extrabold rounded-2xl text-sm transition-all shadow-lg shadow-cyan-500/20 active:scale-95">
+                Concluir
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal Ver Foto Grande -->
+    <div id="photoViewerModal" class="fixed inset-0 bg-slate-950/90 z-50 hidden flex items-center justify-center p-4 cursor-pointer" onclick="this.classList.add('hidden')">
+        <img id="enlargedPhoto" class="max-w-full max-h-[85vh] rounded-3xl border-2 border-cyan-400 shadow-2xl">
+    </div>
+
+    <!-- Toast de Notificação -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-slate-900 border border-cyan-500/40 text-cyan-300 font-bold px-5 py-3.5 rounded-2xl shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center gap-2.5 text-xs sm:text-sm">
+        <i class="fa-solid fa-circle-info text-cyan-400"></i>
+        <span id="toastMsg">Notificação</span>
+    </div>
+
+    <script>
+        // URL da sua Planilha no Google Apps Script (CRAVADA NO CÓDIGO)
+        const URL_PLANILHA_GOOGLE = "https://script.google.com/macros/s/AKfycbyfTgJzUmcEtkQsNMGCF4D1CpBw9sMFlGgy0EIDIKUukFId3wtsgoYORaoWC2v_32LDCQ/exec";
+
+        // Senha de Acesso
+        const ADMIN_PASSWORD = "1qaz2wsx";
+
+        let mediaStream = null;
+
+        // Máscaras de Entrada Automáticas
+        function maskPhone(input) {
+            let value = input.value.replace(/\D/g, '');
+            if (value.length > 11) value = value.slice(0, 11);
+            if (value.length > 6) {
+                input.value = `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7)}`;
+            } else if (value.length > 2) {
+                input.value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+            } else if (value.length > 0) {
+                input.value = `(${value}`;
+            } else {
+                input.value = '';
+            }
+        }
+
+        function maskCNPJ(input) {
+            let value = input.value.replace(/\D/g, '');
+            if (value.length > 14) value = value.slice(0, 14);
+            if (value.length > 12) {
+                input.value = `${value.slice(0, 2)}.${value.slice(2, 5)}.${value.slice(5, 8)}/${value.slice(8, 12)}-${value.slice(12)}`;
+            } else if (value.length > 8) {
+                input.value = `${value.slice(0, 2)}.${value.slice(2, 5)}.${value.slice(5, 8)}/${value.slice(8)}`;
+            } else if (value.length > 5) {
+                input.value = `${value.slice(0, 2)}.${value.slice(2, 5)}.${value.slice(5)}`;
+            } else if (value.length > 2) {
+                input.value = `${value.slice(0, 2)}.${value.slice(2)}`;
+            } else {
+                input.value = value;
+            }
+        }
+
+        // Câmera & Selfie Logic
+        async function openCameraModal() {
+            const modal = document.getElementById('cameraModal');
+            const video = document.getElementById('webcam');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: 'user', width: { ideal: 600 }, height: { ideal: 600 } },
+                    audio: false
+                });
+                video.srcObject = mediaStream;
+            } catch (err) {
+                console.error("Erro ao acessar a câmera: ", err);
+                showToast("Não foi possível acessar a câmera do dispositivo.");
+                closeCameraModal();
+            }
+        }
+
+        function closeCameraModal() {
+            const modal = document.getElementById('cameraModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+                mediaStream = null;
+            }
+        }
+
+        function takeSnapshot() {
+            const video = document.getElementById('webcam');
+            const canvas = document.getElementById('canvas');
+            const context = canvas.getContext('2d');
+
+            // Flash visual animation
+            const flash = document.getElementById('flashOverlay');
+            flash.classList.add('flash-effect');
+            setTimeout(() => flash.classList.remove('flash-effect'), 400);
+
+            const size = 600;
+            canvas.width = size;
+            canvas.height = size;
+
+            const vWidth = video.videoWidth || size;
+            const vHeight = video.videoHeight || size;
+            const minDim = Math.min(vWidth, vHeight);
+            const sx = (vWidth - minDim) / 2;
+            const sy = (vHeight - minDim) / 2;
+
+            // Espelhar foto (efeito espelho igual à câmera frontal)
+            context.translate(canvas.width, 0);
+            context.scale(-1, 1);
+            context.drawImage(video, sx, sy, minDim, minDim, 0, 0, size, size);
+
+            // Gera JPEG otimizado (~40KB)
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
+            
+            document.getElementById('photoBase64').value = dataUrl;
+            document.getElementById('photoPreview').src = dataUrl;
+            
+            document.getElementById('photoDefault').classList.add('hidden');
+            document.getElementById('photoPreviewContainer').classList.remove('hidden');
+            document.getElementById('photoPreviewContainer').classList.add('flex');
+
+            setTimeout(() => {
+                closeCameraModal();
+            }, 250);
+        }
+
+        function retakePhoto() {
+            document.getElementById('photoBase64').value = '';
+            document.getElementById('photoPreviewContainer').classList.add('hidden');
+            document.getElementById('photoPreviewContainer').classList.remove('flex');
+            document.getElementById('photoDefault').classList.remove('hidden');
+            openCameraModal();
+        }
+
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const photoBase64 = document.getElementById('photoBase64').value;
+            if (!photoBase64) {
+                showToast("Por favor, tire uma selfie antes de enviar!");
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> Enviando...`;
+
+            const tempoAtuacao = document.querySelector('input[name="tempo_atuacao"]:checked')?.value || "";
+
+            const payload = {
+                timestamp: new Date().toLocaleString('pt-BR'),
+                nome: document.getElementById('nome').value,
+                email: document.getElementById('email').value,
+                telefone: document.getElementById('telefone').value,
+                empresa: document.getElementById('empresa').value,
+                tempo_atuacao: tempoAtuacao,
+                cnpj: document.getElementById('cnpj').value || "Não informado",
+                regime_tributario: document.getElementById('regime').value,
+                nicho: document.getElementById('nicho').value,
+                atencao: document.getElementById('atencao').value,
+                foto: photoBase64
+            };
+
+            // Salva Localmente
+            saveLocalResponse(payload);
+
+            // Envia para o Google Apps Script
+            try {
+                await fetch(URL_PLANILHA_GOOGLE, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (error) {
+                console.warn("Erro no envio para nuvem, salvo localmente:", error);
+            }
+
+            // Ativa efeito Confetti e Modal de Sucesso
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+
+            document.getElementById('successModal').classList.remove('hidden');
+            document.getElementById('successModal').classList.add('flex');
+
+            // Reset do Formulário
+            document.getElementById('visitorForm').reset();
+            document.getElementById('photoBase64').value = '';
+            document.getElementById('photoPreviewContainer').classList.add('hidden');
+            document.getElementById('photoPreviewContainer').classList.remove('flex');
+            document.getElementById('photoDefault').classList.remove('hidden');
+
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `<span>Enviar Cadastro</span> <i class="fa-solid fa-paper-plane text-sm"></i>`;
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.add('hidden');
+            document.getElementById('successModal').classList.remove('flex');
+        }
+
+        // Sistema Local de Armazenamento
+        function saveLocalResponse(data) {
+            const current = JSON.parse(localStorage.getItem('cpusis_responses') || '[]');
+            current.unshift(data);
+            localStorage.setItem('cpusis_responses', JSON.stringify(current));
+        }
+
+        function getLocalResponses() {
+            return JSON.parse(localStorage.getItem('cpusis_responses') || '[]');
+        }
+
+        // Modais de Autenticação e Painel
+        function openAuthModal() {
+            document.getElementById('authModal').classList.remove('hidden');
+            document.getElementById('adminPassword').focus();
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.add('hidden');
+            document.getElementById('authError').classList.add('hidden');
+            document.getElementById('adminPassword').value = '';
+        }
+
+        function handleAuthSubmit(event) {
+            event.preventDefault();
+            const pass = document.getElementById('adminPassword').value;
+            if (pass === ADMIN_PASSWORD) {
+                closeAuthModal();
+                openAdminPanel();
+            } else {
+                document.getElementById('authError').classList.remove('hidden');
+            }
+        }
+
+        function openAdminPanel() {
+            renderTable();
+            document.getElementById('adminPanelModal').classList.remove('hidden');
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminPanelModal').classList.add('hidden');
+        }
+
+        function renderTable() {
+            const data = getLocalResponses();
+            const tbody = document.getElementById('responsesTableBody');
+            document.getElementById('responseCounter').innerText = data.length;
+            
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="p-6 text-center text-slate-500">Nenhum cadastro recebido ainda neste dispositivo.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = data.map(item => `
+                <tr class="hover:bg-slate-800/40 transition-colors">
+                    <td class="p-3">
+                        <img src="${item.foto}" onclick="viewPhoto('${item.foto}')" class="w-10 h-10 object-cover rounded-full border border-cyan-400/50 cursor-pointer hover:scale-110 transition-transform">
+                    </td>
+                    <td class="p-3 text-slate-400 text-[11px]">${item.timestamp}</td>
+                    <td class="p-3 font-bold text-white">${item.nome}</td>
+                    <td class="p-3">${item.email}<br><span class="text-cyan-400 font-mono text-[11px]">${item.telefone}</span></td>
+                    <td class="p-3 font-semibold">${item.empresa}</td>
+                    <td class="p-3 text-slate-300">${item.tempo_atuacao}</td>
+                    <td class="p-3 font-mono text-[11px]">${item.cnpj}</td>
+                    <td class="p-3">${item.regime_tributario}</td>
+                    <td class="p-3">${item.nicho}</td>
+                </tr>
+            `).join('');
+        }
+
+        function viewPhoto(src) {
+            document.getElementById('enlargedPhoto').src = src;
+            document.getElementById('photoViewerModal').classList.remove('hidden');
+        }
+
+        function exportToCSV() {
+            const data = getLocalResponses();
+            if (data.length === 0) {
+                showToast("Nenhum dado para exportar.");
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+            csvContent += "Data;Nome;Email;Telefone;Empresa;Tempo;CNPJ;Regime;Nicho;Atencao\n";
+
+            data.forEach(item => {
+                csvContent += `"${item.timestamp}";"${item.nome}";"${item.email}";"${item.telefone}";"${item.empresa}";"${item.tempo_atuacao}";"${item.cnpj}";"${item.regime_tributario}";"${item.nicho}";"${item.atencao.replace(/"/g, '""')}"\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `CPUSIS_Visitantes_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3200);
+        }
+    </script>
+</body>
+</html>
